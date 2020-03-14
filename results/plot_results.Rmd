@@ -1,0 +1,24 @@
+---
+title: "LAS2020 WIP carta-prereqs"
+output: html_notebook
+---
+
+```{r}
+library(tidyverse)
+library(feather)
+```
+
+```{r}
+RESULTS_PATH <- "results/simple_model_gpa_prereqsuccess.fthr"
+```
+
+```{r}
+df <- read_feather(RESULTS_PATH)
+
+df %>% 
+  arrange(desc(test_size)) %>%
+  ggplot(aes(test_size, f1_score)) +
+  geom_point()
+  
+```
+
