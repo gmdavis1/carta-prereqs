@@ -1,0 +1,111 @@
+---
+title: "LAS2020 WIP carta-prereqs"
+output: html_notebook
+---
+
+```{r}
+library(tidyverse)
+library(feather)
+```
+
+```{r}
+RESULTS_PATH <- "simple_model_gpa_prereqsuccess.fthr"
+courselist = all_courses
+```
+
+```{r}
+df <- read_feather(RESULTS_PATH)
+
+df %>% 
+  ggplot(aes(test_size, f1_score)) +
+  geom_point() +
+  geom_hline(yintercept = weighted.mean(df$f1_score, df$test_size))
+```
+
+```{r}
+df_large <- read_feather(RESULTS_PATH) %>% 
+  filter(test_size >= 10)
+
+df_large %>% 
+  ggplot(aes(test_size, f1_score)) +
+  geom_point() +
+  geom_hline(yintercept = weighted.mean(df_large$f1_score, df_large$test_size))
+```
+
+```{r}
+nogender_nogpa_x1pass_y1pass_full <- read_feather("nogender_nogpa_x1pass_y1pass_full.fthr")
+nogender_nogpa_x1pass_y1pass_prereq <- read_feather("nogender_nogpa_x1pass_y1pass_prereq.fthr")
+nogender_nogpa_x1success_y1success_full <- read_feather("nogender_nogpa_x1success_y1success_full.fthr")
+nogender_nogpa_x1success_y1success_prereq <- read_feather("nogender_nogpa_x1success_y1success_prereq.fthr")
+```
+
+```{r}
+nogender_nogpa_x1pass_y1pass_full %>% 
+  ggplot(aes(test_size, f1_score)) +
+  geom_point(aes(color = "1"), alpha = 0.7) +
+  geom_hline(aes(yintercept = weighted.mean(nogender_nogpa_x1pass_y1pass_full$f1_score, nogender_nogpa_x1pass_y1pass_full$test_size), color = "1"), alpha = 0.7) +
+  geom_point(data = nogender_nogpa_x1pass_y1pass_prereq, aes(color = "2"), alpha = 0.7) +
+  geom_hline(aes(yintercept = weighted.mean(nogender_nogpa_x1pass_y1pass_prereq$f1_score, nogender_nogpa_x1pass_y1pass_prereq$test_size), color = "2"), alpha = 0.7) +
+  geom_point(data = nogender_nogpa_x1success_y1success_full, aes(color = "3"), alpha = 0.7) +
+  geom_hline(aes(yintercept = weighted.mean(nogender_nogpa_x1success_y1success_full$f1_score, nogender_nogpa_x1success_y1success_full$test_size), color = "3"), alpha = 0.7) +
+  geom_point(data = nogender_nogpa_x1success_y1success_prereq, aes(color = "4"), alpha = 0.7) +
+  geom_hline(aes(yintercept = weighted.mean(nogender_nogpa_x1success_y1success_prereq$f1_score, nogender_nogpa_x1success_y1success_prereq$test_size), color = "4"), alpha = 0.7) +
+  scale_color_manual(
+    values = c(
+      "1" = "red",
+      "2" = "blue",
+      "3" = "green",
+      "4" = "black"
+    ),
+    labels = c(
+      "nogender_nogpa_x1pass_y1pass_full",
+      "nogender_nogpa_x1pass_y1pass_prereq",
+      "nogender_nogpa_x1success_y1success_full",
+      "nogender_nogpa_x1success_y1success_prereq"
+    )
+  ) +
+  theme(
+    legend.position = "bottom"
+  ) +
+  guides(
+    color = guide_legend(nrow = 4)
+  )
+```
+
+```{r}
+genderFalse_gpaFalse_x1bminus_y1bminus_full <- read_feather("genderFalse_gpaFalse_x1bminus_y1bminus_full.fthr")
+genderFalse_gpaFalse_x1bminus_y1bminus_prereq <- read_feather("genderFalse_gpaFalse_x1bminus_y1bminus_prereq.fthr")
+genderTrue_gpaFalse_x1bminus_y1bminus_full <- read_feather("genderTrue_gpaFalse_x1bminus_y1bminus_full.fthr")
+genderTrue_gpaFalse_x1bminus_y1bminus_prereq <- read_feather("genderTrue_gpaFalse_x1bminus_y1bminus_prereq.fthr")
+
+genderFalse_gpaFalse_x1bminus_y1bminus_full %>% 
+  ggplot(aes(test_size, f1_score)) +
+  geom_point(aes(color = "1"), alpha = 0.7) +
+  geom_hline(aes(yintercept = weighted.mean(genderFalse_gpaFalse_x1bminus_y1bminus_full$f1_score, genderFalse_gpaFalse_x1bminus_y1bminus_full$test_size), color = "1"), alpha = 0.7) +
+  geom_point(data = genderFalse_gpaFalse_x1bminus_y1bminus_prereq, aes(color = "2"), alpha = 0.7) +
+  geom_hline(aes(yintercept = weighted.mean(genderFalse_gpaFalse_x1bminus_y1bminus_prereq$f1_score, genderFalse_gpaFalse_x1bminus_y1bminus_prereq$test_size), color = "2"), alpha = 0.7) +
+  geom_point(data = genderTrue_gpaFalse_x1bminus_y1bminus_full, aes(color = "3"), alpha = 0.7) +
+  geom_hline(aes(yintercept = weighted.mean(genderTrue_gpaFalse_x1bminus_y1bminus_full$f1_score, genderTrue_gpaFalse_x1bminus_y1bminus_full$test_size), color = "3"), alpha = 0.7) +
+  geom_point(data = genderTrue_gpaFalse_x1bminus_y1bminus_prereq, aes(color = "4"), alpha = 0.7) +
+  geom_hline(aes(yintercept = weighted.mean(genderTrue_gpaFalse_x1bminus_y1bminus_prereq$f1_score, genderTrue_gpaFalse_x1bminus_y1bminus_prereq$test_size), color = "4"), alpha = 0.7) +
+  scale_color_manual(
+    values = c(
+      "1" = "red",
+      "2" = "blue",
+      "3" = "green",
+      "4" = "black"
+    ),
+    labels = c(
+      "genderFalse_gpaFalse_x1bminus_y1bminus_full",
+      "genderFalse_gpaFalse_x1bminus_y1bminus_prereq",
+      "genderTrue_gpaFalse_x1bminus_y1bminus_full",
+      "genderTrue_gpaFalse_x1bminus_y1bminus_prereq"
+    )
+  ) +
+  theme(
+    legend.position = "bottom"
+  ) +
+  guides(
+    color = guide_legend(nrow = 4)
+  )
+```
