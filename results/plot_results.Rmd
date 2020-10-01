@@ -9,6 +9,36 @@ library(feather)
 ```
 
 ```{r}
+WCC_PATH <- "../data/wcc.rds"
+
+wcc <- read_rds(WCC_PATH)
+
+wcc %>% 
+  ggplot(aes(weak_comps, n, color = as.factor(num_subjects))) +
+  geom_line(aes(color = NULL)) +
+  geom_point() +
+  scale_y_log10() +
+  scale_color_viridis_d() +
+  theme_bw() +
+  theme(
+    legend.position = "bottom",
+    text = element_text(size = 12),
+    axis.text = element_text(size = 10),
+    legend.text = element_text(size = 10)
+  ) +
+  labs(
+    x = "Component number",
+    y = "Unique courses in component",
+    color = "Number of subjects represented in component",
+    title = "Course dependencies as weakly connected networks"
+  ) +
+  guides(
+    color = guide_legend(nrow = 1, reverse = TRUE)
+  )
+```
+
+
+```{r}
 RESULTS_PATH <- "simple_model_gpa_prereqsuccess.fthr"
 courselist = all_courses
 ```
